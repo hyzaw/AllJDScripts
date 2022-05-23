@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 """
 cron: 20 10 */7 * *
-new Env('禁用重复任务');
+new Env('强制禁用重复任务');
 """
 
 import json
