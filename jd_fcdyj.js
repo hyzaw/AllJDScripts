@@ -3,7 +3,8 @@
  * /
  * 基于温某人大佬的脚本修改
  * 助力逻辑：优先助力互助码环境变量，中午10点之后再给我助力
-
+ * TG交流群：https://t.me/jd_zero205
+ * TG通知频道：https://t.me/jd_zero205_tz
  * /
 https://raw.githubusercontent.com/Wenmoux/scripts/master/jd/jd_fcdyj.js
 已支持IOS双京东账号, Node.js支持N个京东账号
@@ -48,7 +49,7 @@ const JD_API_HOST = `https://api.m.jd.com`;
     }
     console.log(`\n发财大赢家助力逻辑：优先助力填写的互助码环境变量，中午10点之后再给我助力\n`)
     message = ''
-    $.linkid = "PFbUR7wtwUcQ860Sn8WRfw"
+    $.linkid = "u_2EYfsxu0skdtZ6gbRjBQ"
     //开红包查询
     for (let i = 0; i < cookiesArr.length; i++) {
         cookie = cookiesArr[i];
@@ -87,7 +88,7 @@ const JD_API_HOST = `https://api.m.jd.com`;
         if (new Date().getHours() >= 10) {
             await getAuthorShareCode()
             if ($.authorCode && $.authorCode.length) {
-                console.log(`\n${$.UserName} 去助力\n`)
+                console.log(`\n${$.UserName} 去助力【zero205】\n`)
                 for (let j = 0; j < $.authorCode.length; j++) {
                     let item = $.authorCode[j];
                     await help(item.redEnvelopeId, item.inviter, 1)
@@ -300,7 +301,7 @@ function help(rid, inviter, type) {
 function getAuthorShareCode() {
     return new Promise(resolve => {
         $.get({
-            url: "https://raw.fastgit.org/shufflewzc/updateTeam/main/shareCodes/dyj.json",
+            url: "",
             headers: {
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
             }

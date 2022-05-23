@@ -38,9 +38,8 @@ $.result = [];
 $.shareCodes = [];
 let cookiesArr = [], cookie = '', token = '';
 let UA, UAInfo = {};
-let nowTimes;
 const randomCount = $.isNode() ? 20 : 3;
-$.appId = 10032;
+$.appId = "92a36";
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -121,7 +120,6 @@ if ($.isNode()) {
 
 async function cfd() {
   try {
-    nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000)
     let beginInfo = await getUserInfo();
     if (beginInfo.LeadInfo.dwLeadType === 2) {
       console.log(`还未开通活动，尝试初始化`)
@@ -134,6 +132,10 @@ async function cfd() {
         console.log(`初始化失败\n`)
         return
       }
+    }
+
+    if (!beginInfo.MarkList.daily_task_win) {
+      await setMark()
     }
 
     //抽奖
@@ -466,10 +468,29 @@ function getAuthorShareCode(url) {
   })
 }
 
+function setMark() {
+  return new Promise(resolve => {
+    $.get(taskUrl("user/SetMark", `strMark=daily_task_win&strValue=1&dwType=1`), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} SetMark API请求失败，请检查网路重试`);
+        } else {
+          data = JSON.parse(data.replace(/\n/g, "").match(new RegExp(/jsonpCBK.?\((.*);*\)/))[1]);
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally{
+        resolve();
+      }
+    })
+  })
+}
+
 // 获取用户信息
 function getUserInfo(showInvite = true) {
   return new Promise(async (resolve) => {
-    $.get(taskUrl(`user/QueryUserInfo`, `ddwTaskId=&strShareId=&strMarkList=${encodeURIComponent('guider_step,collect_coin_auth,guider_medal,guider_over_flag,build_food_full,build_sea_full,build_shop_full,build_fun_full,medal_guider_show,guide_guider_show,guide_receive_vistor,daily_task,guider_daily_task')}&strPgUUNum=${token['farm_jstoken']}&strPgtimestamp=${token['timestamp']}&strPhoneID=${token['phoneid']}`), async (err, resp, data) => {
+    $.get(taskUrl(`user/QueryUserInfo`, `ddwTaskId=&strShareId=&strMarkList=${encodeURIComponent('guider_step,collect_coin_auth,guider_medal,guider_over_flag,build_food_full,build_sea_full,build_shop_full,build_fun_full,medal_guider_show,guide_guider_show,guide_receive_vistor,daily_task,guider_daily_task,cfd_has_show_selef_point,choose_goods_has_show,daily_task_win,new_user_task_win,guider_new_user_task,guider_daily_task_icon,guider_nn_task_icon,tool_layer,new_ask_friend_m')}&strPgtimestamp=${token['timestamp']}&strPhoneID=${token['phoneid']}&strPgUUNum=${token['farm_jstoken']}&strVersion=1.0.1&dwIsReJoin=1`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -484,6 +505,7 @@ function getUserInfo(showInvite = true) {
             dwLandLvl,
             LeadInfo = {},
             Business = {},
+            MarkList = {}
           } = data;
           if (showInvite) {
             console.log(`获取用户信息：${sErrMsg}\n${$.showLog ? data : ""}`);
@@ -501,12 +523,14 @@ function getUserInfo(showInvite = true) {
             strMyShareId,
             dwLandLvl,
             LeadInfo,
+            MarkList
           };
           resolve({
             ddwRichBalance,
             ddwCoinBalance,
             strMyShareId,
             LeadInfo,
+            MarkList
           });
         }
       } catch (e) {
@@ -601,7 +625,7 @@ function taskUrl(function_path, body = '', dwEnv = 7) {
       "User-Agent": UA,
       "Accept-Language": "zh-CN,zh-Hans;q=0.9",
       "Referer": "https://st.jingxi.com/",
-      "Cookie": cookie
+      "Cookie": cookie + "cid=4"
     }
   };
 }
@@ -641,7 +665,7 @@ function showMsg() {
 
 function readShareCode() {
   return new Promise(async resolve => {
-    $.get({url: `http://transfer.nz.lu/cfd`, timeout: 10000}, (err, resp, data) => {
+    $.get({url: `https://transfer.nz.lu/cfd`, timeout: 30 * 1000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(JSON.stringify(err))
@@ -658,7 +682,7 @@ function readShareCode() {
         resolve(data);
       }
     })
-    await $.wait(10000);
+    await $.wait(30 * 1000);
     resolve()
   })
 }
@@ -688,7 +712,7 @@ function TotalBean() {
         "User-Agent": "ScriptableWidgetExtension/185 CFNetwork/1312 Darwin/21.0.0",
         "Accept-Language": "zh-CN,zh-Hans;q=0.9",
         "Accept-Encoding": "gzip, deflate, br",
-        "Cookie": cookie
+        "Cookie": cookie + "cid=4"
       }
     }
     $.get(options, (err, resp, data) => {
@@ -774,7 +798,7 @@ async function requestAlgo() {
       'Accept-Language': 'zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7'
     },
     'body': JSON.stringify({
-      "version": "1.0",
+      "version": "3.0",
       "fp": $.fingerprint,
       "appId": $.appId.toString(),
       "timestamp": Date.now(),
@@ -837,7 +861,7 @@ function decrypt(time, stk, type, url) {
     const hash2 = $.CryptoJS.HmacSHA256(st, hash1.toString()).toString($.CryptoJS.enc.Hex);
     // console.log(`\nst:${st}`)
     // console.log(`h5st:${["".concat(timestamp.toString()), "".concat(fingerprint.toString()), "".concat($.appId.toString()), "".concat(token), "".concat(hash2)].join(";")}\n`)
-    return encodeURIComponent(["".concat(timestamp.toString()), "".concat($.fingerprint.toString()), "".concat($.appId.toString()), "".concat($.token), "".concat(hash2)].join(";"))
+    return encodeURIComponent(["".concat(timestamp.toString()), "".concat($.fingerprint.toString()), "".concat($.appId.toString()), "".concat($.token), "".concat(hash2), "".concat("3.0"), "".concat(time)].join(";"))
   } else {
     return '20210318144213808;8277529360925161;10001;tk01w952a1b73a8nU0luMGtBanZTHCgj0KFVwDa4n5pJ95T/5bxO/m54p4MtgVEwKNev1u/BUjrpWAUMZPW0Kz2RWP8v;86054c036fe3bf0991bd9a9da1a8d44dd130c6508602215e50bb1e385326779d'
   }
