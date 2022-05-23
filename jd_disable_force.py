@@ -190,37 +190,41 @@ def get_token() -> str or None:
 
 
 if __name__ == "__main__":
-    logger.info("===> 禁用重复任务开始 <===")
-    load_send()
-    token = get_token()
-    headers["Authorization"] = f"Bearer {token}"
+    for i in range(2):
+        try:
+            logger.info("===> 禁用重复任务开始 <===")
+            load_send()
+            token = get_token()
+            headers["Authorization"] = f"Bearer {token}"
 
-    # 获取过滤后的任务列表
-    sub_str = "\n".join(sub_list)
-    logger.info(f"\n=== 你选择过滤的任务前缀为 ===\n{sub_str}")
-    tasklist = get_tasklist()
-    if len(tasklist) == 0:
-        logger.info("❌无法获取 tasklist!!!")
-        exit(1)
-    filter_list, res_list = filter_res_sub(tasklist)
+            # 获取过滤后的任务列表
+            sub_str = "\n".join(sub_list)
+            logger.info(f"\n=== 你选择过滤的任务前缀为 ===\n{sub_str}")
+            tasklist = get_tasklist()
+            if len(tasklist) == 0:
+                logger.info("❌无法获取 tasklist!!!")
+                exit(1)
+            filter_list, res_list = filter_res_sub(tasklist)
 
-    tem_ids, tem_tasks, dup_ids = get_duplicate_list(filter_list)
-    # 是否在重复任务中只保留设置的前缀
-    if res_only:
-        ids = reserve_task_only(tem_ids, tem_tasks, dup_ids, res_list)
-    else:
-        ids = dup_ids
-        logger.info("你选择保留除了设置的前缀以外的其他任务")
-    enids = enable_tasks(tem_ids)
-    sum = f"所有任务数量为：{len(tasklist)}"
-    filter = f"过滤的任务数量为：{len(res_list)}"
-    disable = f"禁用的任务数量为：{len(ids)}"
-    enable = f"启用的任务数量为：{len(tem_ids)}"
-    logging.info("\n=== 禁用数量统计 ===\n" + sum + "\n" + filter + "\n" + disable + "\n" + enable)
+            tem_ids, tem_tasks, dup_ids = get_duplicate_list(filter_list)
+            # 是否在重复任务中只保留设置的前缀
+            if res_only:
+                ids = reserve_task_only(tem_ids, tem_tasks, dup_ids, res_list)
+            else:
+                ids = dup_ids
+                logger.info("你选择保留除了设置的前缀以外的其他任务")
+            enids = enable_tasks(tem_ids)
+            sum = f"所有任务数量为：{len(tasklist)}"
+            filter = f"过滤的任务数量为：{len(res_list)}"
+            disable = f"禁用的任务数量为：{len(ids)}"
+            enable = f"启用的任务数量为：{len(tem_ids)}"
+            logging.info("\n=== 禁用数量统计 ===\n" + sum + "\n" + filter + "\n" + disable + "\n" + enable)
 
-    if len(ids) == 0:
-        logger.info("😁没有重复任务~")
-    else:
-        disable_duplicate_tasks(ids)
-    # if send:
-    # send("💖禁用重复任务成功", f"\n{sum}\n{filter}\n{disable}")
+            if len(ids) == 0:
+                logger.info("😁没有重复任务~")
+            else:
+                disable_duplicate_tasks(ids)
+            # if send:
+            # send("💖禁用重复任务成功", f"\n{sum}\n{filter}\n{disable}")
+        except:
+            ipport="localhost:5600"

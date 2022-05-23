@@ -28,9 +28,9 @@ if not ipport:
     ipport = "localhost:5700"
 else:
     ipport = ipport.lstrip("http://").rstrip("/")
-sub_str = os.getenv("RES_SUB", "hyzaw_AllJDScripts")
+sub_str = "hyzaw_AllJDScripts"
 sub_list = sub_str.split("&")
-res_only = os.getenv("RES_ONLY", True)
+res_only = True
 headers = {
     "Accept": "application/json",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
@@ -123,7 +123,7 @@ def get_duplicate_list(tasklist: list) -> tuple:
 
 
 def reserve_task_only(
-    tem_ids: list, tem_tasks: list, dup_ids: list, res_list: list
+        tem_ids: list, tem_tasks: list, dup_ids: list, res_list: list
 ) -> list:
     if len(tem_ids) == 0:
         return tem_ids
@@ -159,6 +159,19 @@ def disable_duplicate_tasks(ids: list) -> None:
         logger.info("🎉成功禁用重复任务~")
 
 
+def enable_tasks(ids: list) -> None:
+    t = round(time.time() * 1000)
+    url = f"http://{ipport}/api/crons/enable?t={t}"
+    data = json.dumps(ids)
+    headers["Content-Type"] = "application/json;charset=UTF-8"
+    response = requests.put(url=url, headers=headers, data=data)
+    datas = json.loads(response.content.decode("utf-8"))
+    if datas.get("code") != 200:
+        logger.info(f"❌出错!!!错误信息为：{datas}")
+    else:
+        logger.info("🎉成功启用任务~")
+
+
 def get_token() -> str or None:
     path = '/ql/config/auth.json'  # 设置青龙 auth文件地址
     global flag1
@@ -177,36 +190,41 @@ def get_token() -> str or None:
 
 
 if __name__ == "__main__":
-    logger.info("===> 禁用重复任务开始 <===")
-    load_send()
-    token = get_token()
-    headers["Authorization"] = f"Bearer {token}"
+    for i in range(2):
+        try:
+            logger.info("===> 禁用重复任务开始 <===")
+            load_send()
+            token = get_token()
+            headers["Authorization"] = f"Bearer {token}"
 
-    # 获取过滤后的任务列表
-    sub_str = "\n".join(sub_list)
-    logger.info(f"\n=== 你选择过滤的任务前缀为 ===\n{sub_str}")
-    tasklist = get_tasklist()
-    if len(tasklist) == 0:
-        logger.info("❌无法获取 tasklist!!!")
-        exit(1)
-    filter_list, res_list = filter_res_sub(tasklist)
+            # 获取过滤后的任务列表
+            sub_str = "\n".join(sub_list)
+            logger.info(f"\n=== 你选择过滤的任务前缀为 ===\n{sub_str}")
+            tasklist = get_tasklist()
+            if len(tasklist) == 0:
+                logger.info("❌无法获取 tasklist!!!")
+                exit(1)
+            filter_list, res_list = filter_res_sub(tasklist)
 
-    tem_ids, tem_tasks, dup_ids = get_duplicate_list(filter_list)
-    # 是否在重复任务中只保留设置的前缀
-    if res_only:
-        ids = reserve_task_only(tem_ids, tem_tasks, dup_ids, res_list)
-    else:
-        ids = dup_ids
-        logger.info("你选择保留除了设置的前缀以外的其他任务")
+            tem_ids, tem_tasks, dup_ids = get_duplicate_list(filter_list)
+            # 是否在重复任务中只保留设置的前缀
+            if res_only:
+                ids = reserve_task_only(tem_ids, tem_tasks, dup_ids, res_list)
+            else:
+                ids = dup_ids
+                logger.info("你选择保留除了设置的前缀以外的其他任务")
+            enids = enable_tasks(tem_ids)
+            sum = f"所有任务数量为：{len(tasklist)}"
+            filter = f"过滤的任务数量为：{len(res_list)}"
+            disable = f"禁用的任务数量为：{len(ids)}"
+            enable = f"启用的任务数量为：{len(tem_ids)}"
+            logging.info("\n=== 禁用数量统计 ===\n" + sum + "\n" + filter + "\n" + disable + "\n" + enable)
 
-    sum = f"所有任务数量为：{len(tasklist)}"
-    filter = f"过滤的任务数量为：{len(res_list)}"
-    disable = f"禁用的任务数量为：{len(ids)}"
-    logging.info("\n=== 禁用数量统计 ===\n" + sum + "\n" + filter + "\n" + disable)
-
-    if len(ids) == 0:
-        logger.info("😁没有重复任务~")
-    else:
-        disable_duplicate_tasks(ids)
-    #if send:
-        #send("💖禁用重复任务成功", f"\n{sum}\n{filter}\n{disable}")
+            if len(ids) == 0:
+                logger.info("😁没有重复任务~")
+            else:
+                disable_duplicate_tasks(ids)
+            # if send:
+            # send("💖禁用重复任务成功", f"\n{sum}\n{filter}\n{disable}")
+        except:
+            ipport="localhost:5600"
