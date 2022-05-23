@@ -41,60 +41,61 @@ for (let i = 0; i < CookieJDs.length; i++) {
 }
 
 // 以下为注入互助码环境变量（仅nodejs内起效）的代码
-function SetShareCodesEnv(nameChinese = "", nameConfig = "", envName = "") {
-  let rawCodeConfig = {}
+function SetShareCodesEnv(nameConfig = "", envName = "") {
+    let rawCodeConfig = {}
 
-  // 读取互助码
-  shareCodeLogPath = `${process.env.QL_DIR}/log/.ShareCode/${nameConfig}.log`
-  let fs = require('fs')
-  if (fs.existsSync(shareCodeLogPath)) {
-    // 因为faker2目前没有自带ini，改用已有的dotenv来解析
-    // // 利用ini模块读取原始互助码和互助组信息
-    // let ini = require('ini')
-    // rawCodeConfig = ini.parse(fs.readFileSync(shareCodeLogPath, 'utf-8'))
+    // 读取互助码
+    shareCodeLogPath = `${process.env.QL_DIR}/log/.ShareCode/${nameConfig}.log`
+    let fs = require('fs')
+    if (fs.existsSync(shareCodeLogPath)) {
+        // 因为faker2目前没有自带ini，改用已有的dotenv来解析
+        // // 利用ini模块读取原始互助码和互助组信息
+        // let ini = require('ini')
+        // rawCodeConfig = ini.parse(fs.readFileSync(shareCodeLogPath, 'utf-8'))
 
-    // 使用env模块
-    require('dotenv').config({path: shareCodeLogPath})
-    rawCodeConfig = process.env
-  }
-
-  // 解析每个用户的互助码
-  codes = {}
-  Object.keys(rawCodeConfig).forEach(function (key) {
-    if (key.startsWith(`My${nameConfig}`)) {
-      codes[key] = rawCodeConfig[key]
+        // 使用env模块
+        require('dotenv').config({path: shareCodeLogPath})
+        rawCodeConfig = process.env
     }
-  });
 
-  // 解析每个用户要帮助的互助码组，将用户实际的互助码填充进去
-  let helpOtherCodes = {}
-  Object.keys(rawCodeConfig).forEach(function (key) {
-    if (key.startsWith(`ForOther${nameConfig}`)) {
-      helpCode = rawCodeConfig[key]
-      for (const [codeEnv, codeVal] of Object.entries(codes)) {
-        helpCode = helpCode.replace("${" + codeEnv + "}", codeVal)
-      }
+    // 解析每个用户的互助码
+    codes = {}
+    Object.keys(rawCodeConfig).forEach(function (key) {
+        if (key.startsWith(`My${nameConfig}`)) {
+            codes[key] = rawCodeConfig[key]
+        }
+    });
 
-      helpOtherCodes[key] = helpCode
+    // 解析每个用户要帮助的互助码组，将用户实际的互助码填充进去
+    let helpOtherCodes = {}
+    Object.keys(rawCodeConfig).forEach(function (key) {
+        if (key.startsWith(`ForOther${nameConfig}`)) {
+            helpCode = rawCodeConfig[key]
+            for (const [codeEnv, codeVal] of Object.entries(codes)) {
+                helpCode = helpCode.replace("${" + codeEnv + "}", codeVal)
+            }
+
+            helpOtherCodes[key] = helpCode
+        }
+    });
+
+    // 按顺序用&拼凑到一起，并放入环境变量，供目标脚本使用
+    let shareCodes = []
+    let totalCodeCount = Object.keys(helpOtherCodes).length
+    for (let idx = 1; idx <= totalCodeCount; idx++) {
+        shareCodes.push(helpOtherCodes[`ForOther${nameConfig}${idx}`])
     }
-  });
+    let shareCodesStr = shareCodes.join('&')
+    process.env[envName] = shareCodesStr
 
-  // 按顺序用&拼凑到一起，并放入环境变量，供目标脚本使用
-  let shareCodes = []
-  let totalCodeCount = Object.keys(helpOtherCodes).length
-  for (let idx = 1; idx <= totalCodeCount; idx++) {
-    shareCodes.push(helpOtherCodes[`ForOther${nameConfig}${idx}`])
-  }
-  let shareCodesStr = shareCodes.join('&')
-  process.env[envName] = shareCodesStr
-
-  console.info(`${nameChinese} 的 互助码环境变量 ${envName}，共计 ${totalCodeCount} 组互助码，总大小为 ${shareCodesStr.length} 字节`)
+    console.info(`【风之凌殇】 友情提示：为避免ck超过45以上时，互助码环境变量过大而导致调用一些系统命令（如date/cat）时报 Argument list too long，改为在nodejs中设置 ${nameConfig} 的 互助码环境变量 ${envName}，共计 ${totalCodeCount} 组互助码，总大小为 ${shareCodesStr.length}`)
 }
 
 // 若在task_before.sh 中设置了要设置互助码环境变量的活动名称和环境变量名称信息，则在nodejs中处理，供活动使用
-let nameChinese = process.env.ShareCodeConfigChineseName
 let nameConfig = process.env.ShareCodeConfigName
 let envName = process.env.ShareCodeEnvName
-if (nameChinese && nameConfig && envName) {
-  SetShareCodesEnv(nameChinese, nameConfig, envName)
+if (nameConfig && envName) {
+    SetShareCodesEnv(nameConfig, envName)
+} else {
+    console.debug(`hyzaw 友情提示：您的脚本正常运行中`)
 }
