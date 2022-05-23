@@ -1,13 +1,13 @@
 /*
-入口 极速版 赚金币 推一推
-助力前三
-
+注意：助力码每天会变，旧的不可用。
+助力逻辑：优先助力互助码变量，默认助力前三个可助力的账号，需要修改助力人数修改代码57行的数字即可
+入口-极速版-推推赚大钱  5元无门槛卷 大概需要50人助力
  [task_local]
-#搞基大神-推一推
-3 1 * * * http://47.101.146.160/scripts/jd_tyt.js, tag=搞基大神-推一推, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+#快速推一推
+0 1 * * * jd_tyt.js, tag=推一推, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 */
 
-const $ = new Env('推一推');//助力前三个可助力的账号
+const $ = new Env('极速版-推推赚大钱');//助力前三个可助力的账号
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -15,9 +15,7 @@ const JD_API_HOST = 'https://api.m.jd.com';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let status = ''
-
 let inviteCodes = []
-
 if ($.isNode()) {
      Object.keys(jdCookieNode).forEach((item) => {
           cookiesArr.push(jdCookieNode[item])
@@ -32,7 +30,6 @@ if ($.isNode()) {
           $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
           return;
      }
-
      for (let i = 0; i < cookiesArr.length; i++) {
           if (cookiesArr[i]) {
                cookie = cookiesArr[i];
@@ -52,8 +49,7 @@ if ($.isNode()) {
                     continue
                }
           }
-          console.log('\n入口 狗东极速版 赚金币 推一推\n');
-          console.log('\n本脚本无任何内置助力\n如果你发现有那么就是别人二改加的\n一切与本人无关\n');
+          console.log('\n入口→极速版→赚金币→推推赚大钱\n');
           await info()
           await coinDozerBackFlow()
           await getCoinDozerInfo()
@@ -62,7 +58,6 @@ if ($.isNode()) {
                break
           }
      }
-
      console.log('\n#######开始助力前三个可助力的账号#######\n');
      cookiesArr.sort(function () {
           return .5 - Math.random();
@@ -96,8 +91,6 @@ if ($.isNode()) {
      .finally(() => {
           $.done();
      })
-
-
 function info() {
      return new Promise((resolve) => {
 
@@ -105,15 +98,12 @@ function info() {
                url: `${JD_API_HOST}`,
                body: `functionId=initiateCoinDozer&body={"actId":"49f40d2f40b3470e8d6c39aa4866c7ff","channel":"coin_dozer","antiToken":"","referer":"-1","frontendInitStatus":"s"}&appid=megatron&client=ios&clientVersion=14.3&t=1636014459632&networkType=4g&eid=&fp=-1&frontendInitStatus=s&uuid=8888&osVersion=14.3&d_brand=&d_model=&agent=-1&pageClickKey=-1&screen=400*700&platform=3&lang=zh_CN`,
                headers: {
-
                     "Cookie": cookie,
                     "Origin": "https://pushgold.jd.com",
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-
                }
           }
           $.post(nm, async (err, resp, data) => {
-
                try {
                     if (err) {
                          console.log(`${JSON.stringify(err)}`)
@@ -226,8 +216,6 @@ function helpCoinDozer(packetId) {
           })
      })
 }
-
-
 function help(packetId) {
      return new Promise((resolve) => {
           const nm = {
@@ -263,10 +251,9 @@ function help(packetId) {
                               if (data.msg.indexOf("完成") != -1) {
                                    $.ok = true
                               }
-                             
+                              console.log(data.msg)
                          }
                     }
-
                } catch (e) {
                     $.logErr(e, resp)
                } finally {
@@ -283,11 +270,9 @@ function getCoinDozerInfo() {
                url: `${JD_API_HOST}`,
                body: `functionId=getCoinDozerInfo&body={"actId":"49f40d2f40b3470e8d6c39aa4866c7ff","channel":"coin_dozer","antiToken":"","referer":"-1","frontendInitStatus":"s"}&appid=megatron&client=ios&clientVersion=14.3&t=1636015858295&networkType=4g&eid=&fp=-1&frontendInitStatus=s&uuid=8888&osVersion=14.3&d_brand=&d_model=&agent=-1&pageClickKey=-1&screen=400*700&platform=3&lang=zh_CN`,
                headers: {
-
                     "Cookie": cookie,
                     "Origin": "https://pushgold.jd.com",
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-
                }
           }
           $.post(nm, async (err, resp, data) => {
