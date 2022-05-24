@@ -213,7 +213,7 @@ if __name__ == "__main__":
             else:
                 ids = dup_ids
                 logger.info("你选择保留除了设置的前缀以外的其他任务")
-            enids = enable_tasks(tem_ids)
+            #enids = enable_tasks(tem_ids)
             sum = f"所有任务数量为：{len(tasklist)}"
             filter = f"过滤的任务数量为：{len(res_list)}"
             disable = f"禁用的任务数量为：{len(ids)}"
