@@ -1,4 +1,4 @@
-with open('/etc/hosts','w') as f:
+with open('/etc/hosts','a+') as f:
     hosts=f.read()
     if '127.0.0.1 o1098464.ingest.sentry.io' in f:
         print('已屏蔽')
