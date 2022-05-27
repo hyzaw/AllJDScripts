@@ -18,11 +18,16 @@ for dist in ql_dists:
             if os.path.isdir(dist + '/' + i) or '.gz' in i:
                 files.remove(i)
         js_sec = []
+        jsd = []
         for i in files:
             with open(dist + '/' + i, 'r', encoding='utf-8') as f:
-                if 'sentry.io' in f.read():
+                ff = f.read()
+                if 'sentry.io' in ff:
                     print(i, '文件中含有sentry.io')
                     js_sec.append(i)
+                if 'cdn.jsdelivr.net' in ff:
+                    print(i, '含有 cdn.jsdelivr.net')
+                    jsd.append(i)
         for i in js_sec:
             f = open(dist + '/' + i, 'r', encoding='utf-8')
             file_content = f.read()
@@ -31,5 +36,13 @@ for dist in ql_dists:
             f.write(file_content.replace('sentry.io', ''))
             f.close()
             print('屏蔽js成功', i)
+        for i in jsd:
+            f = open(dist + '/' + i, 'r', encoding='utf-8')
+            file_content = f.read()
+            f.close()
+            f = open(dist + '/' + i, 'w', encoding='utf-8')
+            f.write(file_content.replace('cdn.jsdelivr.net', 'fastly.jsdelivr.net'))
+            f.close()
+            print('成功尝试解决白屏问题（替换cdn）', i)
     except:
         pass
