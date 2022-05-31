@@ -1,9 +1,16 @@
 /*
-设置了环境变量FLCODE
+618红包
+
+变量
+export CODE618=""  
+
+建议禁用，避免其他问题 需要的请填写自己的码子，
+
 cron 0 0,10,20 * * * jd_618_red.js
-* */
+
+*/
 const $ = new Env('618红包');
-$.flCode = $.isNode() ? (process.env.FLCODE ? process.env.FLCODE : '') : '';
+$.CODE618 = $.isNode() ? (process.env.CODE618 ? process.env.CODE618 : '') : '';
 const jdCookieNode = require('./jdCookie.js');
 let cookiesArr = [];
 if ($.isNode()) {
@@ -28,7 +35,7 @@ let appId, fingerprint, token, enCryptMethodJD;
     let fglist = ['6289931560897925', '0403403318679778', '1390288884563462'];
     fingerprint = getRandomArrayElements(fglist, 1)[0];
     await requestAlgo();
-    if ($.flCode !== '9999') {
+    if ($.CODE618 !== '9999') {
         $.show = false;
     } else {
         $.show = true;
@@ -43,9 +50,9 @@ let appId, fingerprint, token, enCryptMethodJD;
     }
 })().catch((e) => { $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '') }).finally(() => { $.done(); })
 
-async function main(ck, code = 'JdhENNw') {
-    let codes = ['JdhENNw','JKhfec3']
-    code = $.flCode ? $.flCode : codes[random(0, codes.length)]
+async function main(ck, code = 'Jt4KpgH') {
+    const codes = ['Jt4KpgH','Jwodrl8']
+    code = $.CODE618 ? $.CODE618 : codes[random(0, codes.length)]
     // console.log(code)
     let userName = decodeURIComponent(ck.match(/pt_pin=([^; ]+)(?=;?)/) && ck.match(/pt_pin=([^; ]+)(?=;?)/)[1])
     let jfInfo = await getInfoByUrl($, ck, code);
