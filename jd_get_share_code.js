@@ -188,8 +188,8 @@ function getJxNc(){
       },
     };
   }
-  
-/*   return new Promise(resolve => {
+
+  return new Promise(resolve => {
     $.get(
       JXNC_taskurl('query', `type=1`),
       async (err, resp, data) => {
@@ -225,8 +225,7 @@ function getJxNc(){
         }
       }
     );
-  }) */
-  
+  })
 }
 
 function getJdPet(){
@@ -657,7 +656,7 @@ async function getShareCode() {
   await getJdZZ()
   await getJoy()
   await getSgmh()
-  //await getCFD()
+  await getCFD()
   await getJdCash()
   console.log(`======账号${$.index}结束======\n`)
 }
