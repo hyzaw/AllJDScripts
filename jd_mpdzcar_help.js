@@ -1,11 +1,12 @@
 /*
-活动入口:京东汽车 - 下方 - 一键签到领京豆
-先跑积分,不要问为什么分开😂
-BY：小埋
+TG https://t.me/duckjobs
+
+活动入口:京东汽车 - 右下角 - 领京豆
+纯助力,无内置,ck1不能黑号,不要问为什么分开😂
 
 新人助力10,老用户5
 
-10 3 * * * jd_mpdzcar_help.js
+10 3 * * * jd_mpdzcar.js
 */
 const $ = new Env('头文字J 助力');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -27,7 +28,6 @@ if ($.isNode()) {
     cookiesArr = cookiesArr.filter(item => !!item);
 }
 !(async () => {
-	console.log(`\n活动入口:京东汽车 - 下方 - 一键签到领京豆\n活动口令:28:/￥Y1uPX46XLe￥，参与头文字J，集能量，换京豆。`);	
     if (!cookiesArr[0]) {
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
         return;
@@ -62,7 +62,6 @@ if ($.isNode()) {
             // $.activityShopId = '1760001'
             $.activityUrl = `https://mpdz-car-dz.isvjcloud.com/h5/?lng=00.000000&lat=00.000000&sid=&un_area=`
             await mpdzCar()
-            await $.wait(5000)
             if ($.bean > 0) {
                 message += `\n【京东账号${$.index}】${$.nickName || $.UserName} \n       └ 获得 ${$.bean} 京豆。`
             }
@@ -95,11 +94,10 @@ async function mpdzCar() {
         })
         // console.log($.buyerNick)
         if ($.buyerNick) {
-            await $.wait(5000)
+
             await task('/ql/front/loadUnitedCardActivityInfo', {
                 buyerNick: $.buyerNick
             })
-            await $.wait(5000)
             console.log('去助力 '+$.authorCode);
             await task('/ql/front/participantBehavior', {
                 buyerNick: $.buyerNick,
