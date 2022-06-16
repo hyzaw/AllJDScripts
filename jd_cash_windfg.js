@@ -1,6 +1,6 @@
 /**
  * 签到领现金_Windfgg，每日2毛～5毛
- * cron "0 0 6 * *" sign_xj.js,tag=签到领现金
+ * 定时随机，避免大量访问导致接口错误
  * 
  * 无助力活动 助力码无用
  * 活动入口：京东APP搜索领现金进入
@@ -289,7 +289,6 @@
                      console.log("签名获取失败,Token使用次数上限.");
                  }
              } catch (e) {
-                 $.log("签名获取失败. 状态码:" +resp.statusCode +'(401是未授权或可能被拉黑,521是服务器宕机)')
                  $.logErr(e,resp)
              } finally {
                  resolve('');
