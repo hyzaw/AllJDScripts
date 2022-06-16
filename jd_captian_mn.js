@@ -2,7 +2,7 @@
 console.log("不喜欢被搬运,加密脚本,担心勿跑,安佳组队,助力ck1,需要新会员,入队失败一般是老会员,一次性脚本,瓜分20组上限")
 console.log("https://lzkjdz-isv.isvjcloud.com/pool/captain/13145?activityId=4e3b9b6233104c199c0c44ff6edbc85d")
 
-7 7 7 7 7 jd_captian_mn.js
+
 */
 const $ = new Env("蒙牛组队");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
