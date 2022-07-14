@@ -2,6 +2,7 @@
 福袋
 https://lzkjdz-isv.isvjcloud.com/wxUnPackingActivity/activity/13145?activityId=
 7 7 7 7 7 jd_wxUnPackingActivity.js
+变量 wxUnPackingActivity 
 */
 const $ = new Env("福袋");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
