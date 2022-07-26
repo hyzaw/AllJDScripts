@@ -58,7 +58,7 @@ if ($.isNode()) {
       $.UUID = getUUID("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
       authorCodeList = [
         'f28c07d319e646ebbf5f1fdb5742e8fb',
-        '8462a2fbeb32488fbe85d26d282f05c7',
+        // '8462a2fbeb32488fbe85d26d282f05c7',
         // '4bd1f2cb22d14e13b8203467048fd2f4',
       ];
       // $.authorCode = authorCodeList[random(0, authorCodeList.length)];
@@ -67,7 +67,7 @@ if ($.isNode()) {
       $.randomCode = random(1000000, 9999999);
       $.activityId = "dz32b9e7834db5821a2c983c10d854";
       $.activityShopId = "1000003835";
-      $.activityUrl = `https://lzdz1-isv.isvjcloud.com/dingzhi/jul/qixiSecond/activity?activityId==${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=${encodeURIComponent($.secretPin)}&shopid=${$.activityShopId}&lng=00.000000&lat=00.000000&sid=&un_area=`;
+      $.activityUrl = `https://lzdz1-isv.isvjcloud.com/dingzhi/jul/qixiSecond/activity?activityId=${$.activityId}&shareUuid=${encodeURIComponent($.authorCode)}&adsource=null&shareuserid4minipg=${encodeURIComponent($.secretPin)}&shopid=${$.activityShopId}&lng=00.000000&lat=00.000000&sid=&un_area=`;
       await member();
       await $.wait(3000);
       if ($.bean > 0) {
