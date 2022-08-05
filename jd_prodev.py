@@ -12,7 +12,7 @@ print = partial(print, flush=True)
 
 activatyname = '邀请赢大礼'
 activityId = 'dVF7gQUVKyUcuSsVhuya5d2XD4F'   # 活动类型
-authorCode = '16dde1860f1b4f1b9a93db6612abf0b9' # 活动id
+authorCode = '' # 活动id
 invitePin = '' # pin 填写cookie后面的pin
 activityUrl = f'https://prodev.m.jd.com/mall/active/{activityId}/index.html?code={authorCode}&invitePin={invitePin}'
 
