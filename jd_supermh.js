@@ -47,7 +47,6 @@ $.invitePinTaskList = []
         continue
       }
       await run();
-			await $.wait(2000);
     }
   }
 
